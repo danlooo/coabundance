@@ -2,6 +2,7 @@
 # coabundance
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/danlooo/coabundance/workflows/R-CMD-check/badge.svg)](https://github.com/danlooo/coabundance/actions)
 <!-- badges: end -->
 
 The goal of coabundance is to ...

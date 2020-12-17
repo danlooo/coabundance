@@ -18,3 +18,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: https://github.com/danlooo/coabundance
+BugReports: https://github.com/danlooo/coabundance/issues
