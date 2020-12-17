@@ -2,7 +2,7 @@
 % Please edit documentation in R/correlate.R
 \name{correlate_fastspar}
 \alias{correlate_fastspar}
-\title{Do fastspar coabundance}
+\title{Coabundance analysis using SparCC as implemented in fastspar}
 \usage{
 correlate_fastspar(
   data,
@@ -16,5 +16,5 @@ correlate_fastspar(
 \item{data}{integer matrix of abundance count data. One sample per row and one taxon per column}
 }
 \description{
-Do fastspar coabundance
+This implementation is way faster than \code{correlate_spiec_easi_sparcc} but requires linux and the external shell command \code{fastspar}.
 }

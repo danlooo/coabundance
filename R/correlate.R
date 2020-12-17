@@ -1,10 +1,11 @@
-#' Do fastspar coabundance
+#' Coabundance analysis using SparCC as implemented in fastspar
+#'
+#' This implementation is way faster than `correlate_spiec_easi_sparcc` but requires linux and the external shell command `fastspar`.
 #' @param data integer matrix of abundance count data. One sample per row and one taxon per column
 correlate_fastspar <- function(data, iterations = 50, exclude_iterations = 10, bootstraps = 200, threads = getOption("mc.cores")) {
-  fastspar_bin_dir_path <- "/analysis/miniconda3/bin"
-  Sys.setenv(PATH = paste0(fastspar_bin_dir_path, ":", Sys.getenv("PATH")))
-
   system <- function(...) base::system(ignore.stdout = TRUE, ignore.stderr = TRUE, ...)
+
+  threads <- min(parallel::detectCores(), threads)
 
   # sanity checks
   if (class(data) != "matrix") stop("data must be of type matrix")
@@ -102,8 +103,57 @@ correlate_fastspar <- function(data, iterations = 50, exclude_iterations = 10, b
     dplyr::select(-comp) %>%
     readr::type_convert() %>%
     dplyr::ungroup() %>%
-    mutate(q.value = p.adjust(p.value, method = "fdr")) %>%
+    dplyr::filter(from != to) %>%
+    dplyr::mutate(q.value = p.adjust(p.value, method = "fdr")) %>%
     dplyr::select(from, to, p.value, q.value, estimate)
 
-  res %>% as_coabundance(method = "")
+  res %>% as_coabundance(method = "sparcc")
+}
+
+#' Coabundance analysis using SparCC
+#' @param implementation Character indicating the implementation of SparCC algorithm to use. One of "fastspar", "spiec_easi"
+#' @param ... further arguments passed to the sparcc correlation functions
+correlate_sparcc <- function(implementation = "spiec_easi", ...) {
+  switch(implementation,
+    "fastspar" = correlate_fastspar(...),
+    "spiec_easi" = correlate_spiec_easi_sparcc(...),
+    stop(stringr::str_glue("{implementation} must be one of fastspar, auto, or spiec_easi"))
+  )
+}
+
+#' Coabundance analysis using SparCC as implemented in SpiecEasi
+#' @param data integer matrix of abundance count data. One sample per row and one taxon per column
+correlate_spiec_easi_sparcc <- function(data, iterations = 10, bootstraps = 200, threads = getOption("mc.cores")) {
+  sparcc_boot <-
+    SpiecEasi::sparccboot(
+      data = data,
+      R = bootstraps,
+      ncpus = threads,
+      sparcc.params = list(
+        iter = iterations,
+        inner_iter = iterations,
+        th = 0.1
+      )
+    )
+
+  sparcc_pval <-
+    sparcc_boot %>%
+    SpiecEasi::pval.sparccboot(sided = "both")
+
+  list(boot = sparcc_boot, pval = sparcc_pval) %>%
+    structure(class = "spiec_easi_sparcc_res") %>%
+    as_coabundance(cor_res = .)
+}
+
+correlate_pearson <- function(data) {
+  data %>%
+    Hmisc::rcorr(type = "pearson") %>%
+    as_coabundance(method = "pearson")
+}
+
+
+correlate_spearman <- function(data) {
+  data %>%
+    Hmisc::rcorr(type = "spearman") %>%
+    as_coabundance(method = "spearman")
 }
