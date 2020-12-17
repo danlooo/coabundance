@@ -1,3 +1,7 @@
+#' Create a coabundance object
+#' @param cor_res result object originally describing the relationships (e.g. object of class `rcorr`)
+#' @param edges tibble with columns from and to describing edges
+#' @param method character of correlation method used
 coabundance <- function(cor_res, edges, nodes = NULL, method = NULL, ...) {
   as_coabundance.default(cor_res, edges, nodes = NULL, method = NULL, ...)
 }

@@ -2,3 +2,4 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^\.pre-commit-config\.yaml$
