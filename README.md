@@ -1,3 +1,4 @@
+<img src="man/figures/logo.png" align="right" height="200" />
 
 # coabundance
 
@@ -5,23 +6,18 @@
 [![R-CMD-check](https://github.com/danlooo/coabundance/workflows/R-CMD-check/badge.svg)](https://github.com/danlooo/coabundance/actions)
 <!-- badges: end -->
 
-The goal of coabundance is to ...
+Wrapper arround several methods to asses co-abundant taxa in microbial datasets.
 
 ## Installation
 
 You can install the released version of coabundance from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("coabundance")
+devtools::install_github("danlooo/coabundance")
 ```
 
-## Example
+## Websites
 
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(coabundance)
-## basic example code
-```
+[https://danlooo.github.io/coabundance/](https://danlooo.github.io/coabundance/)
 
 # coabundance
