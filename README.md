@@ -23,3 +23,4 @@ library(coabundance)
 ## basic example code
 ```
 
+# coabundance
