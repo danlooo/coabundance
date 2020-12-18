@@ -16,6 +16,16 @@ You can install the released version of coabundance from [CRAN](https://CRAN.R-p
 devtools::install_github("danlooo/coabundance")
 ```
 
+## Get Started
+
+```r
+library(coabundance)
+data("abundances1", package = "coabundance")
+
+coabundance1 <- correlate(abundances1)
+```
+
+
 ## Websites
 
 [https://danlooo.github.io/coabundance/](https://danlooo.github.io/coabundance/)

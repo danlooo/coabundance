@@ -2,6 +2,7 @@
 
 export(as_coabundance)
 export(coabundance)
+export(correlate)
 export(correlate_fastspar)
 export(correlate_mb)
 export(correlate_pearson)

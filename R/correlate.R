@@ -1,4 +1,40 @@
-#' Coabundance analysis using SparCC as implemented in fastspar
+#' Coabundance Analysis
+#' 
+#' @details 
+#'  The option `method` (`sparcc` by default) defines the method use to calculate the interaction between pairs of coabundant taxa:
+#'  
+#'  * `pearson`: Pearson correlation coefficient
+#'  * `spearman`: Spearman's rank correlation coefficient
+#'  * `mb`: Inverse Covariance based on \insertCite{mb}{coabundance} as implemented in \insertCite{spiec_easi}{coabundance}
+#'  * `sparcc`: SparCC correlation based on \insertCite{sparcc}{coabundance} as implemented in \insertCite{spiec_easi}{coabundance}
+#'  or \insertCite{fastspar}{coabundance}
+#'  
+#' @references 
+#' 
+#' \insertRef{mb}{coabundance}
+#' 
+#' \insertRef{spiec_easi}{coabundance}
+#' 
+#' \insertRef{sparcc}{coabundance}
+#' 
+#' \insertRef{fastspar}{coabundance}
+#' 
+#' @param data matrix or data frame with abundance count data
+#' @param method character of coabundance method. One of 'sparcc', 'mb', 'pearson', or 'spearman'
+#' @param ... arguments passed to selected function (one of \link[coabundance]{correlate_sparcc},
+#' \link[coabundance]{correlate_mb}, \link[coabundance]{correlate_spearman}, or \link[coabundance]{correlate_pearson})
+#' @export
+correlate <- function(data, method = "sparcc", ...) {
+  switch(method,
+         "sparcc" = correlate_sparcc(data = data, ...),
+         "mb" = correlate_mb(data = data, ...),
+         "pearson" = correlate_pearson(data = data, ...),
+         "spearman" = correlate_spearman(data = data, ...),
+         stop(str_glue("method {method} is not implemented!"))
+    )
+}
+
+#' Coabundance Analysis Using SparCC as Implemented in Fastspar
 #'
 #' This implementation is way faster than `correlate_spiec_easi_sparcc` but requires linux and the external shell command `fastspar`.
 #' @param data integer matrix of abundance count data. One sample per row and one taxon per column
@@ -192,6 +228,8 @@ correlate_spiec_easi_sparcc <- function(data, iterations = 10, bootstraps = 200,
     as_coabundance(cor_res = .)
 }
 
+
+#' Correlate Pearson
 #' @export
 correlate_pearson <- function(data) {
   data %>%
@@ -199,6 +237,8 @@ correlate_pearson <- function(data) {
     as_coabundance(method = "pearson")
 }
 
+
+#' Correlate Spearman
 #' @export
 correlate_spearman <- function(data) {
   data %>%
