@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Coabundance analysis using SparCC as implemented in SpiecEasi — correlate_spiec_easi_sparcc • coabundance</title>
+<title>Coabundance analysis using mb as implemented in SpiecEasi — correlate_mb • coabundance</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Coabundance analysis using SparCC as implemented in SpiecEasi — correlate_spiec_easi_sparcc" />
-<meta property="og:description" content="Coabundance analysis using SparCC as implemented in SpiecEasi" />
+<meta property="og:title" content="Coabundance analysis using mb as implemented in SpiecEasi — correlate_mb" />
+<meta property="og:description" content="This is a wrapper arround function SpiecEasi::spiec.easi with argument method = &quot;mb&quot;." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -128,21 +128,20 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Coabundance analysis using SparCC as implemented in SpiecEasi</h1>
+    <h1>Coabundance analysis using mb as implemented in SpiecEasi</h1>
     <small class="dont-index">Source: <a href='https://github.com/danlooo/coabundance/blob/master/R/correlate.R'><code>R/correlate.R</code></a></small>
-    <div class="hidden name"><code>correlate_spiec_easi_sparcc.Rd</code></div>
+    <div class="hidden name"><code>correlate_mb.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Coabundance analysis using SparCC as implemented in SpiecEasi</p>
+    <p>This is a wrapper arround function <code><a href='https://rdrr.io/pkg/SpiecEasi/man/spiec.easi.html'>SpiecEasi::spiec.easi</a></code> with argument <code>method = "mb"</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>correlate_spiec_easi_sparcc</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>correlate_mb</span><span class='op'>(</span>
   <span class='va'>data</span>,
-  iterations <span class='op'>=</span> <span class='fl'>10</span>,
-  bootstraps <span class='op'>=</span> <span class='fl'>200</span>,
-  th <span class='op'>=</span> <span class='fl'>0.1</span>,
-  threads <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"mc.cores"</span><span class='op'>)</span>
+  pulsar.params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>thresh <span class='op'>=</span> <span class='fl'>0.05</span>, subsample.ratio <span class='op'>=</span> <span class='fl'>0.8</span>, ncores <span class='op'>=</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"mc.cores"</span><span class='op'>)</span>, rep.num <span class='op'>=</span> <span class='fl'>20</span>, seed <span class='op'>=</span> <span class='fl'>1337</span><span class='op'>)</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -152,8 +151,20 @@
       <th>data</th>
       <td><p>integer matrix of abundance count data. One sample per row and one taxon per column</p></td>
     </tr>
+    <tr>
+      <th>pulsar.params</th>
+      <td><p>list of options passed to <a href='https://rdrr.io/pkg/SpiecEasi/man/pulsar.params.html'>pulsar.params</a></p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>further options passed to <a href='https://rdrr.io/pkg/SpiecEasi/man/spiec.easi.html'>spiec.easi</a></p></td>
+    </tr>
     </table>
 
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>spiec_easicoabundance</p>
+<p>mbcoabundance</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
