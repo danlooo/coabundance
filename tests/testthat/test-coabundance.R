@@ -1,21 +1,29 @@
 library(tidyverse)
 
-set.seed(1337)
-n_samples <- 20
-n_taxa <- 10
-n_taxa_pairs <- 45
-data <- rnbinom(n_samples * n_taxa, 10, 0.95) %>% matrix(nrow = n_samples)
-rownames(data) <- n_samples %>%
-  seq() %>%
-  paste0("sample_", .)
-colnames(data) <- n_taxa %>%
-  seq() %>%
-  paste0("taxon_", .)
+create_example_data <- function(n_samples = 20, n_taxa = 10, seed = 1337) {
+  set.seed(seed)
+  data <- rnbinom(n_samples * n_taxa, 10, 0.95) %>% matrix(nrow = n_samples)
+  
+  rownames(data) <- n_samples %>%
+    seq() %>%
+    paste0("sample_", .)
+  
+  colnames(data) <- n_taxa %>%
+    seq() %>%
+    paste0("taxon_", .)
+  
+  return(data)
+}
 
 expect_graph <- function(res) {
   expect_equal(res$graph %>% igraph::gsize(), n_taxa_pairs)
   expect_equal(res$graph %>% igraph::gorder(), n_taxa)
 }
+
+n_samples <- 20
+n_taxa <- 10
+data <- create_example_data(n_samples = n_samples, n_taxa = n_taxa)
+n_taxa_pairs <- n_taxa*(n_taxa-1)/2
 
 test_that("multiplication works", {
   expect_equal(2 * 2, 4)
@@ -35,6 +43,20 @@ test_that("correlate spearman", {
   expect_s3_class(res, "coabundance")
   expect_equal(res$method, "spearman")
   expect_graph(res)
+})
+
+test_that("correlate mb", {
+  options(mc.cores = 5)
+  res <- correlate_mb(data)
+  
+  expect_s3_class(res, "coabundance")
+  expect_equal(res$method, "mb")
+  expect_graph(res)
+})
+
+test_that("correlate mb fail", {
+  # prevent other methods to be set in this explicit mb function
+  expect_error(correlate_mb(data, method = "glasso"))
 })
 
 test_that("correlate fastspar", {
