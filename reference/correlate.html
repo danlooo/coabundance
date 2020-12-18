@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • coabundance</title>
+<title>Coabundance Analysis — correlate • coabundance</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Coabundance Analysis — correlate" />
+<meta property="og:description" content="Coabundance Analysis" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -66,7 +67,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -125,90 +126,66 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Coabundance Analysis</h1>
+    <small class="dont-index">Source: <a href='https://github.com/danlooo/coabundance/blob/master/R/correlate.R'><code>R/correlate.R</code></a></small>
+    <div class="hidden name"><code>correlate.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Coabundance Analysis</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>correlate</span><span class='op'>(</span><span class='va'>data</span>, method <span class='op'>=</span> <span class='st'>"sparcc"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="as_coabundance.html">as_coabundance()</a></code> </p>
-        </td>
-        <td><p>Convert coabundance objects</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="coabundance.html">coabundance()</a></code> </p>
-        </td>
-        <td><p>Create a coabundance object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate.html">correlate()</a></code> </p>
-        </td>
-        <td><p>Coabundance Analysis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate_fastspar.html">correlate_fastspar()</a></code> </p>
-        </td>
-        <td><p>Coabundance Analysis Using SparCC as Implemented in Fastspar</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate_mb.html">correlate_mb()</a></code> </p>
-        </td>
-        <td><p>Coabundance analysis using mb as implemented in SpiecEasi</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate_pearson.html">correlate_pearson()</a></code> </p>
-        </td>
-        <td><p>Correlate Pearson</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate_sparcc.html">correlate_sparcc()</a></code> </p>
-        </td>
-        <td><p>Coabundance analysis using SparCC</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate_spearman.html">correlate_spearman()</a></code> </p>
-        </td>
-        <td><p>Correlate Spearman</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate_spiec_easi_sparcc.html">correlate_spiec_easi_sparcc()</a></code> </p>
-        </td>
-        <td><p>Coabundance analysis using SparCC as implemented in SpiecEasi</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>matrix or data frame with abundance count data</p></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td><p>character of coabundance method. One of 'sparcc', 'mb', 'pearson', or 'spearman'</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>arguments passed to selected function (one of <a href='correlate_sparcc.html'>correlate_sparcc</a>,
+<a href='correlate_mb.html'>correlate_mb</a>, <a href='correlate_spearman.html'>correlate_spearman</a>, or <a href='correlate_pearson.html'>correlate_pearson</a>)</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The option <code>method</code> (<code>sparcc</code> by default) defines the method use to calculate the interaction between pairs of coabundant taxa:</p><ul>
+<li><p><code>pearson</code>: Pearson correlation coefficient</p></li>
+<li><p><code>spearman</code>: Spearman's rank correlation coefficient</p></li>
+<li><p><code>mb</code>: Inverse Covariance based on (Meinshausen et al. 2006)
+ as implemented in (Kurtz et al. 2015)</p></li>
+<li><p><code>sparcc</code>: SparCC correlation based on (Friedman and Alm 2012)
+ as implemented in (Kurtz et al. 2015)
+
+or (Watts et al. 2019)</p></li>
+</ul>
+
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Meinshausen N, Bühlmann P, others (2006).
+&#8220;High-dimensional graphs and variable selection with the lasso.&#8221;
+<em>The annals of statistics</em>, <b>34</b>(3), 1436--1462.</p>
+<p>Kurtz ZD, M?ller CL, Miraldi ER, Littman DR, Blaser MJ, Bonneau RA (2015).
+&#8220;Sparse and compositionally robust inference of microbial ecological networks.&#8221;
+<em>PLoS Comput Biol</em>, <b>11</b>(5), e1004226.</p>
+<p>Friedman J, Alm EJ (2012).
+&#8220;Inferring correlation networks from genomic survey data.&#8221;
+<em>PLoS Comput Biol</em>, <b>8</b>(9), e1002687.</p>
+<p>Watts SC, Ritchie SC, Inouye M, Holt KE (2019).
+&#8220;FastSpar: rapid and scalable correlation estimation for compositional data.&#8221;
+<em>Bioinformatics</em>, <b>35</b>(6), 1064--1066.</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
