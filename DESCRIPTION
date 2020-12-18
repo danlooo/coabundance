@@ -8,8 +8,7 @@ Authors@R:
            email = "looddaniel@gmail.com",
            comment = c(ORCID = "0000-0002-4024-4443"))
 Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+License: BSD-2-Clause License
 URL: https://github.com/danlooo/coabundance
 BugReports: https://github.com/danlooo/coabundance/issues
 Imports: 
@@ -17,7 +16,8 @@ Imports:
     SpiecEasi,
     Hmisc,
     tidygraph,
-    tidyverse
+    tidyverse,
+    Rdpack
 Suggests: 
     knitr,
     rmarkdown,
@@ -28,7 +28,6 @@ RdMacros:
     Rdpack
 Remotes: 
     zdk123/SpiecEasi
-Config/testthat/edition: 2
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
