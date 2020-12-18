@@ -2,7 +2,7 @@
 % Please edit documentation in R/correlate.R
 \name{correlate_fastspar}
 \alias{correlate_fastspar}
-\title{Coabundance analysis using SparCC as implemented in fastspar}
+\title{Coabundance Analysis Using SparCC as Implemented in Fastspar}
 \usage{
 correlate_fastspar(
   data,
