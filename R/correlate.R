@@ -84,6 +84,7 @@ correlate_mb <- function(
 #'
 #' This implementation is way faster than `correlate_spiec_easi_sparcc` but requires linux and the external shell command `fastspar`.
 #' @param data integer matrix of abundance count data. One sample per row and one taxon per column
+#' @export
 correlate_fastspar <- function(data, iterations = 50, exclude_iterations = 10, bootstraps = 200, threads = 1) {
   system <- function(...) base::system(ignore.stdout = TRUE, ignore.stderr = TRUE, ...)
 
@@ -193,6 +194,7 @@ correlate_fastspar <- function(data, iterations = 50, exclude_iterations = 10, b
 #' Coabundance analysis using SparCC
 #' @param implementation Character indicating the implementation of SparCC algorithm to use. One of "fastspar", "spiec_easi"
 #' @param ... further arguments passed to the sparcc correlation functions
+#' @export
 correlate_sparcc <- function(..., implementation = "spiec_easi") {
   switch(implementation,
     "fastspar" = correlate_fastspar(...),
@@ -203,6 +205,7 @@ correlate_sparcc <- function(..., implementation = "spiec_easi") {
 
 #' Coabundance analysis using SparCC as implemented in SpiecEasi
 #' @param data integer matrix of abundance count data. One sample per row and one taxon per column
+#' @export
 correlate_spiec_easi_sparcc <- function(data, iterations = 10, bootstraps = 200, threads = 1) {
   sparcc_boot <-
     SpiecEasi::sparccboot(
@@ -225,13 +228,14 @@ correlate_spiec_easi_sparcc <- function(data, iterations = 10, bootstraps = 200,
     as_coabundance(cor_res = .)
 }
 
+#' @export
 correlate_pearson <- function(data) {
   data %>%
     Hmisc::rcorr(type = "pearson") %>%
     as_coabundance(method = "pearson")
 }
 
-
+#' @export
 correlate_spearman <- function(data) {
   data %>%
     Hmisc::rcorr(type = "spearman") %>%
