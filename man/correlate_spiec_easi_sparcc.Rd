@@ -8,8 +8,7 @@ correlate_spiec_easi_sparcc(
   data,
   iterations = 10,
   bootstraps = 200,
-  th = 0.1,
-  threads = getOption("mc.cores")
+  threads = 1
 )
 }
 \arguments{

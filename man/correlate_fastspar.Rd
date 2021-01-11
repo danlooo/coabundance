@@ -2,14 +2,14 @@
 % Please edit documentation in R/correlate.R
 \name{correlate_fastspar}
 \alias{correlate_fastspar}
-\title{Coabundance Analysis Using SparCC as Implemented in Fastspar}
+\title{Coabundance analysis using SparCC as implemented in fastspar}
 \usage{
 correlate_fastspar(
   data,
   iterations = 50,
   exclude_iterations = 10,
   bootstraps = 200,
-  threads = getOption("mc.cores")
+  threads = 1
 )
 }
 \arguments{

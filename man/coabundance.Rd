@@ -4,7 +4,15 @@
 \alias{coabundance}
 \title{Create a coabundance object}
 \usage{
-coabundance(cor_res, edges, nodes = NULL, method = NULL, ...)
+coabundance(
+  cor_res,
+  edges,
+  nodes = NULL,
+  method = NULL,
+  max_pval = NULL,
+  min_abs_estimate = NULL,
+  ...
+)
 }
 \arguments{
 \item{cor_res}{result object originally describing the relationships (e.g. object of class \code{rcorr})}

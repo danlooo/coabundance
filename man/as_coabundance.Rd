@@ -6,9 +6,6 @@
 \usage{
 as_coabundance(x, ...)
 }
-\arguments{
-\item{x}{object to transform to class coabundance. Supported classes: \code{pulsar.refit}, \code{tbl_df}, \code{rcorr}, \code{spiec_easi_sparcc_res}}
-}
 \description{
 Convert coabundance objects
 }

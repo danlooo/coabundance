@@ -1,24 +1,24 @@
 #' Coabundance Analysis
-#' 
-#' @details 
+#'
+#' @details
 #'  The option `method` (`sparcc` by default) defines the method use to calculate the interaction between pairs of coabundant taxa:
-#'  
+#'
 #'  * `pearson`: Pearson correlation coefficient
 #'  * `spearman`: Spearman's rank correlation coefficient
 #'  * `mb`: Inverse Covariance based on \insertCite{mb}{coabundance} as implemented in \insertCite{spiec_easi}{coabundance}
 #'  * `sparcc`: SparCC correlation based on \insertCite{sparcc}{coabundance} as implemented in \insertCite{spiec_easi}{coabundance}
 #'  or \insertCite{fastspar}{coabundance}
-#'  
-#' @references 
-#' 
+#'
+#' @references
+#'
 #' \insertRef{mb}{coabundance}
-#' 
+#'
 #' \insertRef{spiec_easi}{coabundance}
-#' 
+#'
 #' \insertRef{sparcc}{coabundance}
-#' 
+#'
 #' \insertRef{fastspar}{coabundance}
-#' 
+#'
 #' @param data matrix or data frame with abundance count data
 #' @param method character of coabundance method. One of 'sparcc', 'mb', 'pearson', or 'spearman'
 #' @param ... arguments passed to selected function (one of \link[coabundance]{correlate_sparcc},
@@ -26,23 +26,66 @@
 #' @export
 correlate <- function(data, method = "sparcc", ...) {
   switch(method,
-         "sparcc" = correlate_sparcc(data = data, ...),
-         "mb" = correlate_mb(data = data, ...),
-         "pearson" = correlate_pearson(data = data, ...),
-         "spearman" = correlate_spearman(data = data, ...),
-         stop(str_glue("method {method} is not implemented!"))
-    )
+    "sparcc" = correlate_sparcc(data = data, ...),
+    "mb" = correlate_mb(data = data, ...),
+    "pearson" = correlate_pearson(data = data, ...),
+    "spearman" = correlate_spearman(data = data, ...),
+    stop(str_glue("method {method} is not implemented!"))
+  )
 }
 
-#' Coabundance Analysis Using SparCC as Implemented in Fastspar
+#' Coabundance analysis using mb as implemented in SpiecEasi
+#'
+#' This is a wrapper arround function `SpiecEasi::spiec.easi` with argument `method = "mb"`.
+#'
+#' @references
+#'
+#' \insertRef{spiec_easi}{coabundance}
+#'
+#' \insertRef{mb}{coabundance}
+#'
+#' @param data integer matrix of abundance count data. One sample per row and one taxon per column
+#' @param pulsar.params list of options passed to \link[SpiecEasi]{pulsar.params}
+#' @param ... further options passed to \link[SpiecEasi]{spiec.easi}
+#' @export
+correlate_mb <- function(
+                         data,
+                         pulsar.params = list(
+                           thresh = 0.05,
+                           subsample.ratio = 0.8,
+                           ncores = getOption("mc.cores"),
+                           rep.num = 20,
+                           seed = 1337
+                         ), ...) {
+  params <- list(...)
+
+  if (!is.null(params[["method"]])) {
+    stop("Argument method as part of ... must not be set. This method uses mb explicitly.")
+  }
+
+  if (is.null(pulsar.params$ncores)) {
+    warning("Option mc.cores is not set. Defaulting to one thread.")
+    pulsar.params$ncores <- 1
+  }
+
+  list(
+    data = data,
+    method = "mb",
+    pulsar.params = pulsar.params
+  ) %>%
+    c(params) %>%
+    do.call(what = SpiecEasi::spiec.easi, args = .) %>%
+    as_cobundance(method = "mb")
+}
+
+
+
+#' Coabundance analysis using SparCC as implemented in fastspar
 #'
 #' This implementation is way faster than `correlate_spiec_easi_sparcc` but requires linux and the external shell command `fastspar`.
 #' @param data integer matrix of abundance count data. One sample per row and one taxon per column
-#' @export
-correlate_fastspar <- function(data, iterations = 50, exclude_iterations = 10, bootstraps = 200, threads = getOption("mc.cores")) {
+correlate_fastspar <- function(data, iterations = 50, exclude_iterations = 10, bootstraps = 200, threads = 1) {
   system <- function(...) base::system(ignore.stdout = TRUE, ignore.stderr = TRUE, ...)
-
-  threads <- min(parallel::detectCores(), threads)
 
   # sanity checks
   if (class(data) != "matrix") stop("data must be of type matrix")
@@ -147,55 +190,10 @@ correlate_fastspar <- function(data, iterations = 50, exclude_iterations = 10, b
   res %>% as_coabundance(method = "sparcc")
 }
 
-#' Coabundance analysis using mb as implemented in SpiecEasi
-#'
-#' This is a wrapper arround function `SpiecEasi::spiec.easi` with argument `method = "mb"`.
-#'
-#' @references
-#'
-#' \insertRef{spiec_easi}{coabundance}
-#'
-#' \insertRef{mb}{coabundance}
-#'
-#' @param data integer matrix of abundance count data. One sample per row and one taxon per column
-#' @param pulsar.params list of options passed to \link[SpiecEasi]{pulsar.params}
-#' @param ... further options passed to \link[SpiecEasi]{spiec.easi}
-#' @export
-correlate_mb <- function(
-                         data,
-                         pulsar.params = list(
-                           thresh = 0.05,
-                           subsample.ratio = 0.8,
-                           ncores = getOption("mc.cores"),
-                           rep.num = 20,
-                           seed = 1337
-                         ), ...) {
-  params <- list(...)
-  
-  if(! is.null(params[["method"]])) {
-    stop("Argument method as part of ... must not be set. This method uses mb explicitly.")
-  }
-  
-  if(is.null(pulsar.params$ncores)) {
-    warning("Option mc.cores is not set. Defaulting to one thread.")
-    pulsar.params$ncores <- 1
-  }
-  
-  list(
-    data = data,
-    method = "mb",
-    pulsar.params = pulsar.params,
-  ) %>%
-    c(params) %>%
-    do.call(SpiecEasi::spiec.easi) %>%
-    as_cobundance(method = "mb")
-}
-
 #' Coabundance analysis using SparCC
 #' @param implementation Character indicating the implementation of SparCC algorithm to use. One of "fastspar", "spiec_easi"
 #' @param ... further arguments passed to the sparcc correlation functions
-#' @export
-correlate_sparcc <- function(implementation = "spiec_easi", ...) {
+correlate_sparcc <- function(..., implementation = "spiec_easi") {
   switch(implementation,
     "fastspar" = correlate_fastspar(...),
     "spiec_easi" = correlate_spiec_easi_sparcc(...),
@@ -205,8 +203,7 @@ correlate_sparcc <- function(implementation = "spiec_easi", ...) {
 
 #' Coabundance analysis using SparCC as implemented in SpiecEasi
 #' @param data integer matrix of abundance count data. One sample per row and one taxon per column
-#' @export
-correlate_spiec_easi_sparcc <- function(data, iterations = 10, bootstraps = 200, th = 0.1, threads = getOption("mc.cores")) {
+correlate_spiec_easi_sparcc <- function(data, iterations = 10, bootstraps = 200, threads = 1) {
   sparcc_boot <-
     SpiecEasi::sparccboot(
       data = data,
@@ -215,7 +212,7 @@ correlate_spiec_easi_sparcc <- function(data, iterations = 10, bootstraps = 200,
       sparcc.params = list(
         iter = iterations,
         inner_iter = iterations,
-        th = th
+        th = 0.1
       )
     )
 
@@ -228,9 +225,6 @@ correlate_spiec_easi_sparcc <- function(data, iterations = 10, bootstraps = 200,
     as_coabundance(cor_res = .)
 }
 
-
-#' Correlate Pearson
-#' @export
 correlate_pearson <- function(data) {
   data %>%
     Hmisc::rcorr(type = "pearson") %>%
@@ -238,8 +232,6 @@ correlate_pearson <- function(data) {
 }
 
 
-#' Correlate Spearman
-#' @export
 correlate_spearman <- function(data) {
   data %>%
     Hmisc::rcorr(type = "spearman") %>%
