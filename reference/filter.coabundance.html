@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • coabundance</title>
+<title>Filter a coabundance object — filter.coabundance • coabundance</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Filter a coabundance object — filter.coabundance" />
+<meta property="og:description" content="Filter a coabundance object" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -66,7 +67,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -125,84 +126,52 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Filter a coabundance object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/danlooo/coabundance/blob/master/R/coabundance.R'><code>R/coabundance.R</code></a></small>
+    <div class="hidden name"><code>filter.coabundance.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Filter a coabundance object</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>filter.coabundance</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  max_pval <span class='op'>=</span> <span class='fl'>0.05</span>,
+  min_abs_estimate <span class='op'>=</span> <span class='cn'>NULL</span>,
+  remove_isolated_nodes <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  recalculate_topology <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="as_coabundance.html">as_coabundance()</a></code> </p>
-        </td>
-        <td><p>Convert coabundance objects</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="coabundance.html">coabundance()</a></code> </p>
-        </td>
-        <td><p>Create a coabundance object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate.html">correlate()</a></code> </p>
-        </td>
-        <td><p>Coabundance Analysis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate_fastspar.html">correlate_fastspar()</a></code> </p>
-        </td>
-        <td><p>Coabundance analysis using SparCC as implemented in fastspar</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate_mb.html">correlate_mb()</a></code> </p>
-        </td>
-        <td><p>Coabundance analysis using mb as implemented in SpiecEasi</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate_sparcc.html">correlate_sparcc()</a></code> </p>
-        </td>
-        <td><p>Coabundance analysis using SparCC</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correlate_spiec_easi_sparcc.html">correlate_spiec_easi_sparcc()</a></code> </p>
-        </td>
-        <td><p>Coabundance analysis using SparCC as implemented in SpiecEasi</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="filter.coabundance.html">filter.coabundance()</a></code> </p>
-        </td>
-        <td><p>Filter a coabundance object</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>coabundance object</p></td>
+    </tr>
+    <tr>
+      <th>max_pval</th>
+      <td><p>maximum p value to keep an edge. Will be ignores if the p.value is not available</p></td>
+    </tr>
+    <tr>
+      <th>min_abs_estimate</th>
+      <td><p>minimal absolute value of the estimate to keep an edge. This is to filter edges with a low effect size.</p></td>
+    </tr>
+    <tr>
+      <th>remove_isolated_nodes</th>
+      <td><p>TRUE if nodes not being part of any edge after filtering should be removed, FALSE otherwise.</p></td>
+    </tr>
+    <tr>
+      <th>recalculate_topology</th>
+      <td><p>TRUE if node topology metrics e.g. centrality scores should be recalculated after filtering, FALSE otherwise.</p></td>
+    </tr>
     </table>
-  </div>
 
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
