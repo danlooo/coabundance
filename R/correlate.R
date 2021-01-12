@@ -30,7 +30,7 @@ correlate <- function(data, method = "sparcc", ...) {
     "mb" = correlate_mb(data = data, ...),
     "pearson" = correlate_pearson(data = data, ...),
     "spearman" = correlate_spearman(data = data, ...),
-    stop(str_glue("method {method} is not implemented!"))
+    stop(stringr::str_glue("method {method} is not implemented!"))
   )
 }
 
@@ -74,7 +74,7 @@ correlate_mb <- function(
     pulsar.params = pulsar.params
   ) %>%
     c(params) %>%
-    do.call(what = SpiecEasi::spiec.easi, args = .) %>%
+    base::do.call(what = SpiecEasi::spiec.easi, args = .) %>%
     as_coabundance(method = "mb")
 }
 
@@ -90,87 +90,87 @@ correlate_fastspar <- function(data, iterations = 50, exclude_iterations = 10, b
 
   # sanity checks
   if (class(data) != "matrix") stop("data must be of type matrix")
-  if (str_glue("fastspar --version") %>% system() != 0) {
+  if (stringr::str_glue("fastspar --version") %>% base::system() != 0) {
     stop("Command fastspar not found")
   }
 
-  dir <- tempfile(pattern = "fastspar")
-  dir.create(dir, showWarnings = FALSE, recursive = TRUE)
+  dir <- base::tempfile(pattern = "fastspar")
+  base::dir.create(dir, showWarnings = FALSE, recursive = TRUE)
 
-  data_path <- str_glue("{dir}/data.tsv")
+  data_path <- stringr::str_glue("{dir}/data.tsv")
 
   data %>%
     t() %>%
-    as_tibble(rownames = "#OTU ID") %>%
-    write_tsv(data_path)
+    tibble::as_tibble(rownames = "#OTU ID") %>%
+    readr::write_tsv(data_path)
 
-  paste(
+  base::paste(
     "fastspar",
     "--yes",
     "--iterations", iterations,
     "--exclude_iterations", exclude_iterations,
     "--otu_table", data_path,
-    "--correlation", paste0(dir, "/cor.tsv"),
-    "--covariance", paste0(dir, "median_covariance.tsv"),
+    "--correlation", base::paste0(dir, "/cor.tsv"),
+    "--covariance", base::paste0(dir, "median_covariance.tsv"),
     "--threads", threads,
     sep = " "
   ) %>%
-    system()
+    base::system()
 
 
-  paste0(dir, "/bootstraps_counts") %>% dir.create()
-  paste0(dir, "/bootstraps_cor") %>% dir.create()
+  base::paste0(dir, "/bootstraps_counts") %>% base::dir.create()
+  base::paste0(dir, "/bootstraps_cor") %>% base::dir.create()
 
-  paste(
+  base::paste(
     "fastspar_bootstrap",
     "--otu_table", data_path,
     "--number", bootstraps,
-    "--prefix", paste0(dir, "/bootstraps_counts", "/data"),
+    "--prefix", base::paste0(dir, "/bootstraps_counts", "/data"),
     sep = " "
   ) %>%
-    system()
+    base::system()
 
-  paste(
+  base::paste(
     "parallel",
     "--jobs", threads,
 
     "fastspar",
     "--yes",
     "--otu_table {}",
-    "--correlation", paste0(dir, "/bootstraps_cor/cor_{/}"),
-    "--covariance", paste0(dir, "/bootstraps_cor/cov_{/}"),
+    "--correlation", base::paste0(dir, "/bootstraps_cor/cor_{/}"),
+    "--covariance", base::paste0(dir, "/bootstraps_cor/cov_{/}"),
     "--iterations", iterations,
     "--exclude_iterations", exclude_iterations,
     ":::",
-    paste0(dir, "/bootstraps_counts/*"),
+    base::paste0(dir, "/bootstraps_counts/*"),
     sep = " "
   ) %>%
-    system()
+    base::system()
 
-  paste(
+  base::paste(
     "fastspar_pvalues",
     "--otu_table", data_path,
-    "--correlation", paste0(dir, "/cor.tsv"),
-    "--prefix", paste0(dir, "/bootstraps_cor/cor_data_"),
+    "--correlation", base::paste0(dir, "/cor.tsv"),
+    "--prefix", base::paste0(dir, "/bootstraps_cor/cor_data_"),
     "--permutations", bootstraps,
-    "--outfile", paste0(dir, "/pvals.tsv"),
+    "--outfile", base::paste0(dir, "/pvals.tsv"),
     sep = " "
   ) %>%
     system()
 
   pval_tbl <-
-    paste0(dir, "/pvals.tsv") %>%
+    base::paste0(dir, "/pvals.tsv") %>%
     read_tsv(col_types = cols(.default = "c")) %>%
     dplyr::rename(from = `#OTU ID`) %>%
     tidyr::pivot_longer(-from, names_to = "to", values_to = "p.value")
 
   cor_tbl <-
-    paste0(dir, "/cor.tsv") %>%
+    base::paste0(dir, "/cor.tsv") %>%
     readr::read_tsv(col_types = cols(.default = "c")) %>%
     dplyr::rename(from = `#OTU ID`) %>%
     tidyr::pivot_longer(-from, names_to = "to", values_to = "estimate")
 
-  paste0("rm -rf ", dir) %>% system()
+  base::paste0("rm -rf ", dir) %>% system()
 
   res <-
     pval_tbl %>%
@@ -178,7 +178,7 @@ correlate_fastspar <- function(data, iterations = 50, exclude_iterations = 10, b
     # only keep triangle
     dplyr::mutate(comp = from %>% map2_chr(to, ~ c(.x, .y) %>%
       sort() %>%
-      paste0(collapse = "-"))) %>%
+      base::paste0(collapse = "-"))) %>%
     dplyr::group_by(comp) %>%
     dplyr::slice(1) %>%
     dplyr::select(-comp) %>%
@@ -224,7 +224,7 @@ correlate_spiec_easi_sparcc <- function(data, iterations = 10, bootstraps = 200,
     SpiecEasi::pval.sparccboot(sided = "both")
 
   list(boot = sparcc_boot, pval = sparcc_pval) %>%
-    structure(class = "spiec_easi_sparcc_res") %>%
+    base::structure(class = "spiec_easi_sparcc_res") %>%
     as_coabundance(cor_res = .)
 }
 

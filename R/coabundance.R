@@ -8,7 +8,7 @@ coabundance <- function(cor_res, edges, nodes = NULL, method = NULL, max_pval = 
     if ("p.value" %in% colnames(edges)) {
       edges <-
         edges %>%
-        filter(p.value <= max_pval)
+        dplyr::filter(p.value <= max_pval)
     } else {
       warning("Ignore option max_pval: Not applicable")
     }
@@ -17,17 +17,17 @@ coabundance <- function(cor_res, edges, nodes = NULL, method = NULL, max_pval = 
   if (!is.null(min_abs_estimate)) {
     edges <-
       edges %>%
-      filter(abs(estimate) >= min_abs_estimate)
+      dplyr::filter(abs(estimate) >= min_abs_estimate)
   }
 
   if (!is.null(nodes)) {
     taxa <- edges$from %>%
-      union(edges$to) %>%
-      unique()
+      base::union(edges$to) %>%
+      base::unique()
     nodes <- nodes %>% dplyr::filter(taxon %in% taxa)
   }
 
-  edges <- edges %>% arrange(from, to)
+  edges <- edges %>% dplyr::arrange(from, to)
   graph <- tidygraph::tbl_graph(edges = edges, nodes = nodes, directed = FALSE)
 
   res <- list(graph = graph, result = cor_res, method = method)
@@ -40,13 +40,13 @@ coabundance <- function(cor_res, edges, nodes = NULL, method = NULL, max_pval = 
 
 #' @export
 as_coabundance.spiec_easi_sparcc_res <- function(cor_res, ...) {
-  taxa <- cor_res$boot$data %>% colnames()
+  taxa <- cor_res$boot$data %>% base::colnames()
 
   edges <-
     tidyr::expand_grid(from = taxa, to = taxa) %>%
     dplyr::mutate(comp = from %>% map2_chr(to, ~ c(.x, .y) %>%
-      sort() %>%
-      paste0(collapse = ""))) %>%
+      base::sort() %>%
+      base::paste0(collapse = ""))) %>%
     dplyr::group_by(comp) %>%
     dplyr::slice(1) %>%
     dplyr::filter(from != to) %>%
@@ -55,7 +55,7 @@ as_coabundance.spiec_easi_sparcc_res <- function(cor_res, ...) {
     dplyr::mutate(
       estimate = cor_res$pval$cors,
       p.value = cor_res$pval$pvals,
-      q.value = p.adjust(p.value, method = "fdr")
+      q.value = stats::p.adjust(p.value, method = "fdr")
     )
 
   coabundance(cor_res = cor_res, edges = edges, method = "sparcc", ...)
@@ -71,7 +71,7 @@ as_coabundance.rcorr <- function(cor_res, nodes = NULL, method = "rcorr", ...) {
 }
 
 as_coabundance.tbl_df <- function(cor_res, nodes = NULL, method = NULL, ...) {
-  if (!all(c("from", "to", "estimate") %in% colnames(cor_res))) {
+  if (!all(c("from", "to", "estimate") %in% base::colnames(cor_res))) {
     stop("cor_res must have at least columns from and to")
   }
 
@@ -81,38 +81,38 @@ as_coabundance.tbl_df <- function(cor_res, nodes = NULL, method = NULL, ...) {
 as_coabundance.pulsar.refit <- function(cor_res, nodes = NULL, method = NULL, ...) {
   if (method != "mb") stop("Only method mb implemented in objects of type pulsar.refit")
 
-  used_taxa <- cor_res$est$data %>% colnames()
+  used_taxa <- cor_res$est$data %>% base::colnames()
 
   edges <-
     cor_res %>%
-    getOptBeta() %>%
-    as.matrix() %>%
-    as_tibble(rownames = "from") %>%
-    pivot_longer(-one_of("from"), names_to = "to", values_to = "estimate") %>%
-    mutate(to = to %>% str_remove("^V")) %>%
+    SpiecEasi::getOptBeta() %>%
+    base::as.matrix() %>%
+    tibble::as_tibble(rownames = "from") %>%
+    tidyr::pivot_longer(-one_of("from"), names_to = "to", values_to = "estimate") %>%
+    dplyr::mutate(to = to %>% str_remove("^V")) %>%
     readr::type_convert(col_types = cols(from = col_integer(), to = col_integer(), estimate = col_double()))
 
   graph <-
     cor_res %>%
-    getRefit() %>%
-    adj2igraph() %>%
-    as_tbl_graph() %>%
-    mutate(taxon = used_taxa) %>%
+    SpiecEasi::getRefit() %>%
+    SpiecEasi::adj2igraph() %>%
+    tidygraph::as_tbl_graph() %>%
+    dplyr::mutate(taxon = used_taxa) %>%
     tidygraph::activate(edges) %>%
-    left_join(edges, by = c("from", "to")) %>%
+    dplyr::left_join(edges, by = c("from", "to")) %>%
     tidygraph::activate(nodes)
 
   cur_nodes <-
     graph %>%
     tidygraph::activate(nodes) %>%
-    as_tibble()
+    tibble::as_tibble()
 
   edges <-
     graph %>%
     tidygraph::activate(edges) %>%
-    as_tibble() %>%
-    left_join(cur_nodes %>% dplyr::rename(from_taxon = taxon), by = c("from" = "name")) %>%
-    left_join(cur_nodes %>% dplyr::rename(to_taxon = taxon), by = c("to" = "name")) %>%
+    tibble::as_tibble() %>%
+    dplyr::left_join(cur_nodes %>% dplyr::rename(from_taxon = taxon), by = c("from" = "name")) %>%
+    dplyr::left_join(cur_nodes %>% dplyr::rename(to_taxon = taxon), by = c("to" = "name")) %>%
     dplyr::select(from = from_taxon, to = to_taxon, estimate)
 
   coabundance(cor_res = cor_res, edges = edges, nodes = nodes, method = method, ...)
@@ -130,14 +130,14 @@ as_coabundance <- function(x, nodes = NULL, method = NULL, ...) {
   edges <-
     x$graph %>%
     tidygraph::activate(edges) %>%
-    as_tibble()
+    tibble::as_tibble()
 
   nodes <-
     x$graph %>%
     tidygraph::activate(nodes) %>%
-    as_tibble() %>%
-    rename(taxon = name) %>%
-    left_join(nodes, by = "taxon")
+    tibble::as_tibble() %>%
+    dplyr::rename(taxon = name) %>%
+    dplyr::left_join(nodes, by = "taxon")
 
   coabundance(cor_res = x$result, edges = edges, nodes = nodes, method = method, ...)
 }
@@ -145,8 +145,8 @@ as_coabundance <- function(x, nodes = NULL, method = NULL, ...) {
 as_coabundance.default <- function(cor_res, edges, nodes = NULL, method = NULL, ...) {
   if (!is.null(nodes)) {
     taxa <- edges$from %>%
-      union(edges$to) %>%
-      unique()
+      base::union(edges$to) %>%
+      base::unique()
     nodes <- nodes %>% dplyr::filter(taxon %in% taxa)
   }
 
@@ -187,7 +187,7 @@ topologize <- function(x) {
   graph <-
     graph %>%
     tidygraph::activate(nodes) %>%
-    mutate(
+    dplyr::mutate(
       degree = tidygraph::centrality_degree(),
       component = tidygraph::group_components(),
       closeness = tidygraph::centrality_closeness(),
@@ -213,8 +213,8 @@ filter.coabundance <- function(x, max_pval = 0.05, min_abs_estimate = NULL, remo
 
   edge_colnames <- graph %>%
     tidygraph::activate(edges) %>%
-    as_tibble() %>%
-    colnames()
+    tibble::as_tibble() %>%
+    base::colnames()
 
   if (!is.null(max_pval)) {
     if (!"p.value" %in% edge_colnames) {
@@ -231,14 +231,14 @@ filter.coabundance <- function(x, max_pval = 0.05, min_abs_estimate = NULL, remo
     graph <-
       graph %>%
       tidygraph::activate(edges) %>%
-      filter(estimate >= min_abs_estimate)
+      dplyr::filter(estimate >= min_abs_estimate)
   }
 
   if (remove_isolated_nodes) {
     graph <-
       graph %>%
       tidygraph::activate(nodes) %>%
-      filter(!tidygraph::node_is_isolated())
+      dplyr::filter(!tidygraph::node_is_isolated())
   }
 
   graph <- graph %>% tidygraph::activate(!!orig_state)
