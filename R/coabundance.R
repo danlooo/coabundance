@@ -118,7 +118,7 @@ as_coabundance.pulsar.refit <- function(cor_res, nodes = NULL, method = NULL, ..
   coabundance(cor_res = cor_res, edges = edges, nodes = nodes, method = method, ...)
 }
 
-as_coabundance.coabundance <- function(x, nodes = NULL, method = NULL, ...) {
+as_coabundance <- function(x, nodes = NULL, method = NULL, ...) {
   if (is.null(method)) {
     method <- x$method
   }
@@ -139,7 +139,6 @@ as_coabundance.coabundance <- function(x, nodes = NULL, method = NULL, ...) {
     rename(taxon = name) %>%
     left_join(nodes, by = "taxon")
 
-
   coabundance(cor_res = x$result, edges = edges, nodes = nodes, method = method, ...)
 }
 
@@ -156,7 +155,7 @@ as_coabundance.default <- function(cor_res, edges, nodes = NULL, method = NULL, 
 
   res <- list(graph = graph, result = cor_res, method = method)
   class(res) <- "coabundance"
-  res %>% as_coabundance.coabundance(...)
+  res %>% as_coabundance(...)
 }
 
 #' Convert coabundance objects
