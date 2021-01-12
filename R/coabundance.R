@@ -38,6 +38,7 @@ coabundance <- function(cor_res, edges, nodes = NULL, method = NULL, max_pval = 
   res
 }
 
+#' @export
 as_coabundance.spiec_easi_sparcc_res <- function(cor_res, ...) {
   taxa <- cor_res$boot$data %>% colnames()
 
@@ -166,7 +167,7 @@ as_coabundance <- function(x, ...) {
 
 cat_subtle <- function(...) cat(pillar::style_subtle(paste0(...)))
 
-
+#' @export
 print.coabundance <- function(x) {
   n_interactions <- igraph::gsize(x$graph)
   n_nodes <- igraph::gorder(x$graph)
@@ -177,7 +178,6 @@ print.coabundance <- function(x) {
   cat_subtle("# Interactions:\n")
   print(x$graph %>% tidygraph::activate(edges) %>% as_tibble() %>% arrange(-estimate), n = 5)
 }
-
 
 topologize.coabundance <- function(x) {
   graph <- x$graph
