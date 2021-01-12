@@ -75,7 +75,7 @@ correlate_mb <- function(
   ) %>%
     c(params) %>%
     do.call(what = SpiecEasi::spiec.easi, args = .) %>%
-    as_cobundance(method = "mb")
+    as_coabundance(method = "mb")
 }
 
 
