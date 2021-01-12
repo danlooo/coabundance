@@ -179,7 +179,9 @@ print.coabundance <- function(x) {
   print(x$graph %>% tidygraph::activate(edges) %>% as_tibble() %>% arrange(-estimate), n = 5)
 }
 
-topologize.coabundance <- function(x) {
+#' Adds topology data about nodes
+#' @export
+topologize <- function(x) {
   graph <- x$graph
   orig_state <- graph %>% tidygraph::active()
 
@@ -196,11 +198,6 @@ topologize.coabundance <- function(x) {
   graph <- graph %>% tidygraph::activate(!!orig_state)
   x$graph <- graph
   x
-}
-
-#' @export
-topologize <- function(x, ...) {
-  UseMethod("topologize")
 }
 
 #' Filter a coabundance object
