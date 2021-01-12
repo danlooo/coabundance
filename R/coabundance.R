@@ -2,6 +2,7 @@
 #' @param cor_res result object originally describing the relationships (e.g. object of class `rcorr`)
 #' @param edges tibble with columns from and to describing edges
 #' @param method character of correlation method used
+#' @export
 coabundance <- function(cor_res, edges, nodes = NULL, method = NULL, max_pval = NULL, min_abs_estimate = NULL, ...) {
   if (!is.null(max_pval)) {
     if ("p.value" %in% colnames(edges)) {
@@ -158,7 +159,7 @@ as_coabundance.default <- function(cor_res, edges, nodes = NULL, method = NULL, 
 }
 
 #' Convert coabundance objects
-
+#' @export
 as_coabundance <- function(x, ...) {
   UseMethod("as_coabundance")
 }
@@ -197,6 +198,7 @@ topologize.coabundance <- function(x) {
   x
 }
 
+#' @export
 topologize <- function(x, ...) {
   UseMethod("topologize")
 }
@@ -208,6 +210,7 @@ topologize <- function(x, ...) {
 #' @param min_abs_estimate minimal absolute value of the estimate to keep an edge. This is to filter edges with a low effect size.
 #' @param remove_isolated_nodes TRUE if nodes not being part of any edge after filtering should be removed, FALSE otherwise.
 #' @param recalculate_topology TRUE if node topology metrics e.g. centrality scores should be recalculated after filtering, FALSE otherwise.
+#' @export
 filter.coabundance <- function(x, max_pval = 0.05, min_abs_estimate = NULL, remove_isolated_nodes = TRUE, recalculate_topology = TRUE) {
   graph <- x$graph
   orig_state <- graph %>% tidygraph::active()
