@@ -33,7 +33,7 @@ coabundance <- function(cor_res, edges, nodes = NULL, method = NULL, max_pval = 
   res <- list(graph = graph, result = cor_res, method = method)
   class(res) <- "coabundance"
 
-  res <- res %>% topologize.coabundance()
+  res <- res %>% topologize()
 
   res
 }
@@ -248,7 +248,7 @@ filter.coabundance <- function(x, max_pval = 0.05, min_abs_estimate = NULL, remo
   if (recalculate_topology) {
     x <-
       x %>%
-      topologize.coabundance()
+      topologize()
   }
 
   x
